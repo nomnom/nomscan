@@ -78,12 +78,18 @@ void loop()
         led = Serial.parseInt();
         ToggleColor(led, BLUE);
         break;
-        
+
+       // ping - send byte back
+       case 'p': case 'P':
+          Serial.write(c);
+          break;
+       case 'n': case 'N':
+       
        // bytestream
        case 's': case 'S':
         while (true)
         {
-
+     
         
         }
         break;
