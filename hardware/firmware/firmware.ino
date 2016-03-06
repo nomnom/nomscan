@@ -60,7 +60,7 @@ void loop()
        leds.show();
        break;
        
-      // clear
+        // clear
       case 'c': case 'C':
         Clear();
         break;
