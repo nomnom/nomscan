@@ -18,7 +18,7 @@
 
 #include <OctoWS2811.h>
 
-const int numLEDs = 26;
+const int numLEDs = 60;
 
 DMAMEM int displayMemory[numLEDs*6];
 int drawingMemory[numLEDs*6];
@@ -42,6 +42,10 @@ void setup() {
 
 void loop() 
 {
+  SetAll(RED);
+  delay(1000);
+  SetAll(0);
+  
   if (Serial.available() > 0) 
   {
     // read the first char (command char)
@@ -57,9 +61,36 @@ void loop()
       case 'c': case 'C':
         Clear();
         break;
-        
+
+
+      // toggle all
+      case 'a': case 'A':
+        ToggleAll(WHITE);
+        break;
+
+
+       // toggle channels 
+       case 't': case 'T':
+       {
+        led = Serial.parseInt();
+        int red = Serial.parseInt();
+        int green = Serial.parseInt();
+        int blue = Serial.parseInt();
+	      ToggleColor(led, FromRGB(red, green, blue));
+        break;
+       }
+       // set color
+       case 'l': case 'L':
+       {
+        led = Serial.parseInt();
+        int red = Serial.parseInt();
+        int green = Serial.parseInt();
+        int blue = Serial.parseInt();
+        SetColor(led, FromRGB(red, green, blue));
+        break;
+       }
        // toggle led
-       case 'W': case 'w':
+       case 'w': case 'W':
         led = Serial.parseInt();
         ToggleColor(led, WHITE);
         break;
@@ -81,10 +112,11 @@ void loop()
 
        // ping - send byte back
        case 'p': case 'P':
-          Serial.write(c);
-          break;
+        Serial.write(c);
+        break;
+
        case 'n': case 'N':
-       
+          break;
        // bytestream
        case 's': case 'S':
         while (true)
@@ -93,6 +125,9 @@ void loop()
         
         }
         break;
+
+       default:
+         Serial.println("Unknown command");
     }
 
   }
@@ -125,6 +160,21 @@ void ToggleColor(int led, int color)
   leds.setPixel(led, newColor);
 }
 
+void SetAll(int color)
+{
+  for (int i=0; i<numLEDs; ++i)
+     SetColor(i, color);
+
+  leds.show();
+}
+
+void ToggleAll(int color)
+{
+  for (int i=0; i<numLEDs; ++i)
+     ToggleColor(i, color);
+
+  leds.show();
+}
 
 int FromRGB(int red, int green, int blue)
 {
@@ -136,3 +186,5 @@ int ToRGB(int color, int channel)
 {
   return (color >> channel * 8) & 0xFF;
 }
+
+
