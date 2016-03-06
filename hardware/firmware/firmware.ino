@@ -27,11 +27,6 @@ const int config = WS2811_GRB | WS2811_800kHz;
 
 OctoWS2811 leds(numLEDs, displayMemory, drawingMemory, config);
 
-void setup() {
-  leds.begin();
-  leds.show();
-}
-
 #define RED    0xFF0000
 #define GREEN  0x00FF00
 #define BLUE   0x0000FF
@@ -40,11 +35,19 @@ void setup() {
 #define ORANGE 0xE05800
 #define WHITE  0xFFFFFF
 
-void loop() 
-{
+void setup() {
+  leds.begin();
+
   SetAll(RED);
   delay(1000);
   SetAll(0);
+
+  Serial.println ("nomnom LED Interface v0.1");
+}
+
+
+void loop() 
+{
   
   if (Serial.available() > 0) 
   {
@@ -114,9 +117,7 @@ void loop()
        case 'p': case 'P':
         Serial.write(c);
         break;
-
-       case 'n': case 'N':
-          break;
+  
        // bytestream
        case 's': case 'S':
         while (true)
@@ -164,16 +165,12 @@ void SetAll(int color)
 {
   for (int i=0; i<numLEDs; ++i)
      SetColor(i, color);
-
-  leds.show();
 }
 
 void ToggleAll(int color)
 {
   for (int i=0; i<numLEDs; ++i)
      ToggleColor(i, color);
-
-  leds.show();
 }
 
 int FromRGB(int red, int green, int blue)
